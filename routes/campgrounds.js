@@ -3,38 +3,38 @@ const router = express.Router();
 
 const Campground = require('../model/campground');
 
-/* GET campgrounds listing. */
-router.get("/", (req, res) => {
+router.get('/', (req, res) => {
     Campground.find({})
-        .then(campgrounds => res.render("index", {
+        .then(campgrounds => res.render('campgrounds/index', {
             campgrounds: campgrounds
-        }));
+        }))
+        .catch(console.log);
 });
 
-router.post("/", (req, res) => {
+router.post('/', (req, res) => {
     const campground = new Campground({
         name: req.body.name,
         image: req.body.image,
         description: req.body.description
     });
     campground.save()
-        .then(() => res.redirect(req.baseUrl + "/"));
+        .then(() => res.redirect(req.baseUrl + '/'))
+        .catch(console.log);
 });
 
-router.get("/new", (req, res) => {
-    res.render("new");
+router.get('/new', (req, res) => {
+    res.render('campgrounds/new');
 });
 
-router.get("/:id", (req, res) => {
-    Campground.findById(req.params.id, (err, found) => {
-        if (err) {
-            console.log(err);
-        } else {
-            res.render("show", {
+router.get('/:id', (req, res) => {
+    Campground.findById(req.params.id)
+        .populate('comments')
+        .then((found) => {
+            res.render('campgrounds/show', {
                 campground: found
             });
-        }
-    });
+        })
+        .catch(console.log);
 });
 
 

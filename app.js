@@ -6,12 +6,13 @@ const logger = require('morgan');
 const app = express();
 
 const mongoose = require('mongoose');
+
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/campgrounds');
+const campgroundRouter = require('./routes/campgrounds');
+const commentRouter = require('./routes/comments');
 
-
-mongoose.connect("mongodb://localhost/yelp_camp",  { useNewUrlParser: true });
-
+require('./seeds')();
+mongoose.connect('mongodb://localhost/yelp_camp', {useNewUrlParser: true});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -19,12 +20,13 @@ app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/campgrounds', usersRouter);
+app.use('/campgrounds', campgroundRouter);
+app.use('/campgrounds/:campgroundId/comments', commentRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
