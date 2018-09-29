@@ -6,6 +6,14 @@ const logger = require('morgan');
 const app = express();
 
 const mongoose = require('mongoose');
+mongoose.plugin(function (schema) {
+    schema.statics.isObjectId = function (id) {
+        if (id) {
+            return /^[0-9a-fA-F]{24}$/.test(id);
+        }
+        return false;
+    };
+});
 
 const indexRouter = require('./routes/index');
 const campgroundRouter = require('./routes/campgrounds');
@@ -35,13 +43,13 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-    // render the error page
-    res.status(err.status || 500);
-    res.render('error');
+    const status = !err.status ? 500 : err.status;
+    res.status(status)
+        .render('error', {
+            message: err.message,
+            error: req.app.get('env') === 'development' ? err : {},
+            status: status
+        });
 });
 
 module.exports = app;

@@ -26,15 +26,23 @@ router.get('/new', (req, res) => {
     res.render('campgrounds/new');
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', (req, res, next) => {
+    if (!Campground.isObjectId(req.params.id)) {
+        next();
+        return;
+    }
     Campground.findById(req.params.id)
         .populate('comments')
-        .then((found) => {
+        .then(campground => {
+            if (!campground) {
+                next();
+                return
+            }
             res.render('campgrounds/show', {
-                campground: found
+                campground: campground
             });
         })
-        .catch(console.log);
+        .catch(next);
 });
 
 
