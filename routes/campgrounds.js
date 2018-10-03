@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const Campground = require('../model/campground');
+const {isLoggedIn} = require('./user');
 
 router.get('/', (req, res) => {
     Campground.find({})
@@ -28,18 +29,18 @@ router.get('/new', (req, res) => {
 
 router.get('/:id', (req, res, next) => {
     if (!Campground.isObjectId(req.params.id)) {
-        next();
-        return;
+        return next();
     }
     Campground.findById(req.params.id)
         .populate('comments')
         .then(campground => {
             if (!campground) {
-                next();
-                return
+                return next();
             }
+            console.log(campground.comments);
             res.render('campgrounds/show', {
-                campground: campground
+                campground: campground,
+                canComment: res.locals.currentUser !== undefined
             });
         })
         .catch(next);
