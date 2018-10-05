@@ -8,16 +8,10 @@ const LocalStrategy = require('passport-local');
 const passport = require('passport');
 const User = require('./model/user');
 const hbs = require('hbs');
+const methodOverride = require('method-override');
 
 const mongoose = require('mongoose');
-mongoose.plugin(function (schema) {
-    schema.statics.isObjectId = function (id) {
-        if (id) {
-            return /^[0-9a-fA-F]{24}$/.test(id);
-        }
-        return false;
-    };
-});
+mongoose.set('useFindAndModify', false);
 
 // require('./seeds')();
 mongoose.connect('mongodb://localhost/yelp_camp', {useNewUrlParser: true});
@@ -36,6 +30,7 @@ passport.deserializeUser(User.deserializeUser());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 hbs.registerPartials(__dirname + '/views/partials');
+hbs.registerHelper('concat', (...args) => args.slice(0, -1).join(''));
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -43,11 +38,12 @@ app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(methodOverride('_method'));
 
 const indexRouter = require('./routes/index');
 const campgroundRouter = require('./routes/campgrounds');
 const commentRouter = require('./routes/comments');
-const userRouter = require('./routes/user').router;
+const userRouter = require('./routes/user');
 
 
 app.use((req, res, next) => {

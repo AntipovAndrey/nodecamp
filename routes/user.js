@@ -22,7 +22,7 @@ router.get('/login', (req, res) => {
 });
 
 router.post('/login', passport.authenticate('local', {
-    successRedirect: '/campgrounds',
+    successRedirect: 'back',
     failureRedirect: '/login'
 }), (req, res, next) => {
 });
@@ -32,17 +32,5 @@ router.get('/logout', (req, res) => {
     res.redirect('/campgrounds');
 });
 
-const isLoggedIn = (req) => req.isAuthenticated();
 
-const ifLoggedIn = url => (req, res, next) => {
-    if (isLoggedIn(req)) {
-        return next();
-    }
-    res.redirect(url);
-};
-
-module.exports = {
-    router,
-    isLoggedIn,
-    ifLoggedIn
-};
+module.exports = router;

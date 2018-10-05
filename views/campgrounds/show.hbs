@@ -8,19 +8,30 @@
             </div>
         </div>
         <div class="col-md-9">
-            <div class="card">
+            <div class="card mb-2">
                 <img class="card-img-top" src="{{campground.image}}">
-                <div class="card-body mb-2">
+                <div class="card-body">
                     <div class="card-title">
                         <h5 class="d-inline-block">{{campground.name}}</h5>
                         <h6 class="float-right text-muted d-inline-block">$9.00/night</h6>
                     </div>
                     <p class="card-text">{{campground.description}}</p>
+                    <p>
+                        <em class="card-text">Submitted by {{campground.author.username}}</em>
+                    </p>
+                    {{#if canEdit}}
+                        <hr>
+                        <a class="btn btn-outline-warning mr-2" href="/campgrounds/{{campground._id}}/edit">Edit</a>
+                        <form class="d-inline-block" action="/campgrounds/{{campground._id}}?_method=DELETE"
+                              method="post">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    {{/if}}
                 </div>
             </div>
             {{#if canComment}}
                 <div class="text-right my-2">
-                    <a class="btn btn-success" href="{{campground._id}}/comments/new">add comment</a>
+                    <a class="btn btn-success" href="{{campground._id}}/comments/new">Add a comment</a>
                 </div>
             {{/if}}
             {{#each campground.comments}}
@@ -38,5 +49,3 @@
         </div>
     </div>
 </div>
-
-<h1></h1>

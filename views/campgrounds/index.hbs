@@ -2,9 +2,11 @@
     <div class="container">
         <h1>Welcome To YelpCamp</h1>
         <p>View our hand-picked campground from all over the world</p>
-        <p>
-            <a href="/campgrounds/new" class="btn btn-primary btn-large">Add New Campground</a>
-        </p>
+        {{#if canPost}}
+            <p>
+                <a href="/campgrounds/new" class="btn btn-primary btn-large">Add New Campground</a>
+            </p>
+        {{/if}}
     </div>
 </header>
 
