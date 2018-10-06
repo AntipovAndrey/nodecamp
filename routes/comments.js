@@ -1,39 +1,41 @@
 const express = require('express');
 const router = express.Router({mergeParams: true});
 
-const Campground = require('../model/campground');
-const Comment = require('../model/comment');
-
-const ifLoggedIn = require('../middleware').ifLoggedIn('/login');
 const validId = require('../middleware').validId('campgroundId');
+const {requireLoggedIn} = require('../middleware');
+
+const commentController = require('../controllers/comment');
+const campgroundController = require('../controllers/campground');
 
 router.use(validId);
 
-router.get('/new', ifLoggedIn, (req, res, next) => {
-    Campground.findById(req.params.campgroundId)
-        .then((campground) => {
-            if (!campground) {
-                return next();
-            }
-            res.render('comments/new', {campground: campground})
-        })
-        .catch(next);
+router.get('/new', requireLoggedIn, async (req, res, next) => {
+    try {
+        const campground = await campgroundController.findById(req.params.campgroundId);
+        if (!campground) {
+            return next();
+        }
+        return res.render('comments/new', {campground: campground});
+    } catch (error) {
+        return next(error);
+    }
 });
 
-router.post('/', ifLoggedIn, async (req, res) => {
-    let campground = Campground.findById(req.params.campgroundId).exec();
-    let comment = Comment.create({
-        text: req.body.text,
-        author: {
+router.post('/', requireLoggedIn, async (req, res, next) => {
+    try {
+        const comment = {text: req.body.text};
+        const created = await commentController.create(req.params.campgroundId, comment, {
             id: req.user._id,
             username: req.user.username
+        });
+        console.log(created);
+        if (!created) {
+            return next();
         }
-    });
-    campground = await campground;
-    comment = await comment;
-    campground.comments.push(comment);
-    campground.save();
-    res.redirect(`/campgrounds/${campground._id}`);
+        return res.redirect(`/campgrounds/${req.params.campgroundId}`);
+    } catch (error) {
+        return next(error);
+    }
 });
 
 module.exports = router;

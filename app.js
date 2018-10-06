@@ -13,7 +13,6 @@ const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
 
-// require('./seeds')();
 mongoose.connect('mongodb://localhost/yelp_camp', {useNewUrlParser: true});
 
 app.use(require('express-session')({

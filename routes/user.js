@@ -18,13 +18,21 @@ router.post('/register', async (req, res, next) => {
 });
 
 router.get('/login', (req, res) => {
+    if (req.query.redirect) {
+        req.session.redirect = req.query.redirect;
+    }
     res.render('login');
 });
 
-router.post('/login', passport.authenticate('local', {
-    successRedirect: 'back',
-    failureRedirect: '/login'
-}), (req, res, next) => {
+router.post('/login', (req, res, next) => {
+    const redirectUrl = req.session.redirect || '/';
+    if (req.session.redirect) {
+        delete req.session.redirect;
+    }
+    passport.authenticate('local', {
+        successRedirect: redirectUrl,
+        failureRedirect: '/login'
+    })(req, res, next);
 });
 
 router.get('/logout', (req, res) => {

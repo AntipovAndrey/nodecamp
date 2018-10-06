@@ -22,6 +22,7 @@ const checkCampgroundOwnership = async (req, res, next) => {
                 return next();
             }
         } catch (e) {
+            next(e);
         }
     }
     return res.redirect('back');
@@ -36,10 +37,18 @@ const ifLoggedIn = url => (req, res, next) => {
     res.status(401).redirect(url);
 };
 
+const requireLoggedIn = (req, res, next) => {
+    if (isLoggedIn(req)) {
+        return next();
+    }
+    req.session.redirect = req.originalUrl;
+    res.status(401).redirect('/login');
+};
+
 
 module.exports = {
     validId,
     checkCampgroundOwnership,
-    isLoggedIn,
-    ifLoggedIn
+    ifLoggedIn,
+    requireLoggedIn
 };
