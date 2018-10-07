@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../model/user');
 const passport = require('passport');
+const {requireLoggedIn} = require('../middleware');
 
 router.get('/register', (req, res) => {
     res.render('register');
@@ -35,7 +36,8 @@ router.post('/login', (req, res, next) => {
     })(req, res, next);
 });
 
-router.get('/logout', (req, res) => {
+router.get('/logout', requireLoggedIn, (req, res) => {
+    req.flash('success', `See you soon, ${req.user.username}`);
     req.logout();
     res.redirect('/campgrounds');
 });

@@ -22,10 +22,13 @@ const checkCampgroundOwnership = async (req, res, next) => {
                 return next();
             }
         } catch (e) {
-            next(e);
+            return next(e);
         }
+        req.flash('error', 'Operation is not permitted');
+        return res.redirect('back');
+    } else {
+        requireLoggedIn(req, res, next);
     }
-    return res.redirect('back');
 };
 
 const isLoggedIn = (req) => req.isAuthenticated();
@@ -42,6 +45,7 @@ const requireLoggedIn = (req, res, next) => {
         return next();
     }
     req.session.redirect = req.originalUrl;
+    req.flash('error', 'Please Login First!');
     res.status(401).redirect('/login');
 };
 

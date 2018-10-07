@@ -22,6 +22,21 @@
         </ul>
     </div>
 </nav>
+
+{{#if flash.error}}
+    <div class="container mt-2">
+        <div class="alert alert-danger" role="alert">
+            <strong>{{flash.error}}</strong>
+        </div>
+    </div>
+{{/if}}
+{{#if flash.success}}
+    <div class="container mt-2">
+        <div class="alert alert-success" role="alert">
+            <strong>{{flash.success}}</strong>
+        </div>
+    </div>
+{{/if}}
 <div class="container">
     {{{body}}}
 </div>

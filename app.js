@@ -8,12 +8,15 @@ const LocalStrategy = require('passport-local');
 const passport = require('passport');
 const User = require('./model/user');
 const hbs = require('hbs');
+const flash = require('connect-flash');
 const methodOverride = require('method-override');
 
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
 
 mongoose.connect('mongodb://localhost/yelp_camp', {useNewUrlParser: true});
+
+app.use(flash());
 
 app.use(require('express-session')({
     secret: 'Java is like JavaScrip though',
@@ -39,6 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(methodOverride('_method'));
 
+
 const indexRouter = require('./routes/index');
 const campgroundRouter = require('./routes/campgrounds');
 const commentRouter = require('./routes/comments');
@@ -47,9 +51,12 @@ const userRouter = require('./routes/user');
 
 app.use((req, res, next) => {
     res.locals.currentUser = req.user;
+    res.locals.flash = {
+        success: req.flash('success'),
+        error: req.flash('error'),
+    };
     return next();
 });
-
 app.use('/', indexRouter);
 app.use('/', userRouter);
 app.use('/campgrounds', campgroundRouter);

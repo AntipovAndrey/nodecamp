@@ -6,6 +6,7 @@ const {validId, checkCampgroundOwnership, requireLoggedIn} = require('../middlew
 const campgroundController = require('../controllers/campground');
 
 router.get('/', async (req, res, next) => {
+    console.log(res.locals);
     try {
         const campgrounds = await campgroundController.getAll();
         return res.render('campgrounds/index', {
