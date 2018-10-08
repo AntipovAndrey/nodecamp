@@ -1,6 +1,7 @@
 const Comment = require('../model/comment');
 const campgroundService = require('./campground');
 
+// TODO Comments pagination
 async function create(campId, comment) {
     let campground = campgroundService.findById(campId);
     let created = Comment.create(comment);

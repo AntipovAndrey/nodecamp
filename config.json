@@ -1,0 +1,8 @@
+{
+  "db": {
+    "url": "mongodb://localhost/yelp_camp"
+  },
+  "campgrounds": {
+    "pageSize": "8"
+  }
+}

@@ -1,7 +1,31 @@
 const Campground = require('../model/campground');
 
-function getAll() {
-    return Campground.find({}).exec();
+async function getAll(pageInfo) {
+    let next;
+    if (pageInfo.page) {
+        next = new Date(Number(pageInfo.page));
+    } else {
+        next = Date.now()
+    }
+    console.log(next);
+    const campgrounds = await Campground
+        .find({
+            updated: {
+                $lt: next
+            }
+        })
+        .sort({'updated': -1})
+        .limit(Number(pageInfo.pageSize))
+        .exec();
+
+    const result = {
+        campgrounds: campgrounds
+    };
+
+    if (campgrounds.length > 0) {
+        result.next = campgrounds[campgrounds.length - 1].updated.getTime();
+    }
+    return result;
 }
 
 function findById(id) {
@@ -15,6 +39,7 @@ function create(campground) {
 }
 
 function edit(id, campground) {
+    campground.updated = Date.now();
     return Campground.findByIdAndUpdate(id, campground)
         .exec();
 }

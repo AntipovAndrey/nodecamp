@@ -10,11 +10,12 @@ const User = require('./model/user');
 const hbs = require('hbs');
 const flash = require('connect-flash');
 const methodOverride = require('method-override');
+const config = require('./config');
 
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);
 
-mongoose.connect('mongodb://localhost/yelp_camp', {useNewUrlParser: true});
+mongoose.connect(config.db.url, {useNewUrlParser: true});
 
 app.use(flash());
 
@@ -48,7 +49,6 @@ const campgroundRouter = require('./routes/campgrounds');
 const commentRouter = require('./routes/comments');
 const userRouter = require('./routes/user');
 
-
 app.use((req, res, next) => {
     res.locals.currentUser = req.user;
     res.locals.flash = {
@@ -62,20 +62,37 @@ app.use('/', userRouter);
 app.use('/campgrounds', campgroundRouter);
 app.use('/campgrounds/:campgroundId/comments', commentRouter);
 
+app.use(express.json());
+
+app.use('/api/campgrounds', require('./api/campgrounds'));
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    next(createError(404));
+    if (req.url.startsWith('/api')) {
+        res.status(404)
+            .send({
+                error: "Not found"
+            });
+    } else {
+        next(createError(404));
+    }
 });
 
 // error handler
 app.use(function (err, req, res, next) {
     const status = !err.status ? 500 : err.status;
-    res.status(status)
-        .render('error', {
-            message: err.message,
-            error: req.app.get('env') === 'development' ? err : {},
-            status: status
-        });
+    const body = {
+        message: err.message,
+        error: req.app.get('env') === 'development' ? err : {},
+        status: status
+    };
+    if (req.url.startsWith('/api')) {
+        res.status(status)
+            .send(body);
+    } else {
+        res.status(status)
+            .render('error', body);
+    }
 });
 
 module.exports = app;

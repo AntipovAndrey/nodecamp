@@ -1,8 +1,12 @@
 const campgroundService = require('../services/campground');
 const userService = require('../services/user');
+const config = require('../config');
 
-function getAll() {
-    return campgroundService.getAll();
+function getAll(pageInfo = {}) {
+    if (!pageInfo.pageSize) {
+        pageInfo.pageSize = config.campgrounds.pageSize;
+    }
+    return campgroundService.getAll(pageInfo);
 }
 
 function findById(id) {

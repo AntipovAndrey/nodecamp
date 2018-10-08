@@ -9,19 +9,35 @@ router.get('/', async (req, res, next) => {
     try {
         const pageSize = req.query.pageSize;
         const page = req.query.page;
-        const campgrounds = await campgroundController.getAll({
+        let all = await campgroundController.getAll({
             pageSize: pageSize,
             page: page
         });
-        return res.render('campgrounds/index', {
-            campgrounds: campgrounds.campgrounds,
-            canPost: res.locals.currentUser !== undefined
+        all.campgrounds = all.campgrounds.map(c => {
+            return {
+                id: c._id,
+                name: c.name,
+                image: c.image,
+                description: c.description,
+                author: {
+                    id: c.author.id,
+                    username: c.author.username
+                },
+                created: c.created,
+                updated: c.updated,
+                comments: c.comments
+            };
         });
+        return res.status(200)
+            .send({
+                campgrounds: all
+            });
     } catch (error) {
         return next(error);
     }
 });
 
+/*
 router.post('/', requireLoggedIn, async (req, res, next) => {
     try {
         const campground = {
@@ -35,10 +51,7 @@ router.post('/', requireLoggedIn, async (req, res, next) => {
         return next(error);
     }
 });
-
-router.get('/new', requireLoggedIn, (req, res) => {
-    res.render('campgrounds/new');
-});
+*/
 
 router.get('/:id', validId, async (req, res, next) => {
     try {
@@ -46,30 +59,36 @@ router.get('/:id', validId, async (req, res, next) => {
         if (!campground) {
             return next();
         }
-        res.render('campgrounds/show', {
-            campground: campground,
-            canComment: res.locals.currentUser !== undefined,
-            canEdit: req.user && campground.author.id.equals(req.user._id)
+        const comments = campground.comments.map(c => {
+            return {
+                author: {
+                    id: c.author.id,
+                    username: c.author.username
+                },
+                text: c.text
+            }
         });
+        res.status(200)
+            .send({
+                campground: {
+                    id: campground._id,
+                    name: campground.name,
+                    image: campground.image,
+                    description: campground.description,
+                    author: {
+                        id: campground.author.id,
+                        username: campground.author.username
+                    },
+                    comments: comments
+                },
+            });
     } catch (error) {
         return next(error);
     }
 });
 
-router.get('/:id/edit', validId, checkCampgroundOwnership, async (req, res, next) => {
-    try {
-        const campground = await campgroundController.findById(req.params.id);
-        if (!campground) {
-            return next();
-        }
-        res.render('campgrounds/edit', {
-            campground: campground
-        });
-    } catch (error) {
-        return next(error);
-    }
-});
 
+/*
 router.put('/:id', validId, checkCampgroundOwnership, async (req, res, next) => {
     try {
         const campground = {
@@ -107,5 +126,6 @@ router.delete('/:id', validId, checkCampgroundOwnership, async (req, res, next) 
         return next(error);
     }
 });
+*/
 
 module.exports = router;
