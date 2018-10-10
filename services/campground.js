@@ -38,6 +38,7 @@ function create(campground) {
     return Campground.create(campground);
 }
 
+// TODO: replace to pre-hook
 function edit(id, campground) {
     campground.updated = Date.now();
     return Campground.findByIdAndUpdate(id, campground)
@@ -56,4 +57,3 @@ module.exports = {
     edit,
     remove
 };
-

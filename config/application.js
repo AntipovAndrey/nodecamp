@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const flash = require('connect-flash');
 const methodOverride = require('method-override');
-
+const config = require('../config');
 
 function setupApplication(app) {
     app.use(flash());
