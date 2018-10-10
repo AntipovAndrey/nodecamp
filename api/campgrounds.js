@@ -29,7 +29,7 @@ router.get('/', async (req, res, next) => {
             };
         });
         return res.status(200)
-            .send(all);
+            .json(all);
     } catch (error) {
         return next(error);
     }
@@ -67,7 +67,7 @@ router.get('/:id', validId, async (req, res, next) => {
             }
         });
         res.status(200)
-            .send({
+            .json({
                 campground: {
                     id: campground._id,
                     name: campground.name,

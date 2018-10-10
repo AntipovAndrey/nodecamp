@@ -1,17 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../model/user');
 const passport = require('passport');
 const {requireLoggedIn} = require('../middleware');
+const userController = require('../controllers/user');
 
 router.get('/register', (req, res) => {
     res.render('register');
 });
 
 router.post('/register', async (req, res, next) => {
-    const newUser = new User({username: req.body.username});
     try {
-        await User.register(newUser, req.body.password);
+        await userController.register({username: req.body.username, password: req.body.password});
         passport.authenticate('local')(req, res, (err, user) => {
             req.flash('success', `Welcome to YelpCamp ${user.username}!`);
             res.redirect('/campgrounds')

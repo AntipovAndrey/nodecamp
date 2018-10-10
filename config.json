@@ -4,5 +4,8 @@
   },
   "campgrounds": {
     "pageSize": "8"
+  },
+  "jwt": {
+    "secret": "supersecret"
   }
 }
