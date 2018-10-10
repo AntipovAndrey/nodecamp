@@ -12,6 +12,9 @@ router.post('/register', async (req, res, next) => {
     try {
         await userController.register({username: req.body.username, password: req.body.password});
         passport.authenticate('local')(req, res, (err, user) => {
+            if (err) {
+                throw err;
+            }
             req.flash('success', `Welcome to YelpCamp ${user.username}!`);
             res.redirect('/campgrounds')
         });
@@ -44,6 +47,5 @@ router.get('/logout', requireLoggedIn, (req, res) => {
     req.logout();
     res.redirect('/campgrounds');
 });
-
 
 module.exports = router;

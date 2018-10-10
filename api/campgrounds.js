@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const {validId, checkCampgroundOwnership, requireLoggedIn} = require('../middleware');
+const {requireLoggedIn} = require('../middleware/jwt');
+const {validId} = require('../middleware');
 
 const campgroundController = require('../controllers/campground');
 
@@ -35,7 +36,6 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-/*
 router.post('/', requireLoggedIn, async (req, res, next) => {
     try {
         const campground = {
@@ -43,13 +43,12 @@ router.post('/', requireLoggedIn, async (req, res, next) => {
             image: req.body.image,
             description: req.body.description,
         };
-        const created = await campgroundController.create(campground, {id: req.user._id, username: req.user.username});
+        const created = await campgroundController.create(campground, {id: req.user.id, username: req.user.username});
         return res.redirect(`${req.baseUrl}/${created._id}`);
     } catch (error) {
         return next(error);
     }
 });
-*/
 
 router.get('/:id', validId, async (req, res, next) => {
     try {
@@ -84,7 +83,6 @@ router.get('/:id', validId, async (req, res, next) => {
         return next(error);
     }
 });
-
 
 /*
 router.put('/:id', validId, checkCampgroundOwnership, async (req, res, next) => {

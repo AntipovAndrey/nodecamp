@@ -16,7 +16,7 @@ function setupApplication(app) {
     app.use(express.static(path.join(__dirname, 'public')));
 
     app.use(require('express-session')({
-        secret: 'Java is like JavaScrip though',
+        secret: config.session.secret,
         resave: false,
         saveUninitialized: false
     }));

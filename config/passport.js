@@ -13,10 +13,12 @@ function setupPassport(app) {
 
     passport.use(new JWTStrategy({
             jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-            secretOrKey: config.jwt.secret
+            secretOrKey: config.jwt.secret,
+            passReqToCallback: true
         },
-        function (jwtPayload, cb) {
-            return cb(null, jwtPayload);
+        (req, jwtPayload, cb) => {
+            req.user = jwtPayload;
+            cb(null, jwtPayload);
         }
     ));
 

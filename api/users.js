@@ -14,8 +14,4 @@ router.post('/login', async (req, res, next) => {
     })(req, res, next);
 });
 
-router.get('/info', passport.authenticate('jwt', {session: false}), (req, res) => {
-    return res.send(req.user);
-});
-
 module.exports = router;
