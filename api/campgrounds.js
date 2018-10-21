@@ -44,7 +44,7 @@ router.post('/', requireLoggedIn, async (req, res, next) => {
             description: req.body.description,
         };
         const created = await campgroundController.create(campground, {
-            id: req.user.id,
+            id: req.user._id,
             username: req.user.username
         });
         return res.redirect(`${req.baseUrl}/${created._id}`);
