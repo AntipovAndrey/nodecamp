@@ -9,3 +9,6 @@ Project based on The Web Developer Bootcamp course.
 + Different login flow:
   - When user's trying to reach for secured endpoint the app saves original url and redirects to the login form. After successful authentication the app redirects back to the requested page
 + Handlebars instead of ejs
++ ### REST API
+  - get all, get by id and post campground
+  - JWT authentication
