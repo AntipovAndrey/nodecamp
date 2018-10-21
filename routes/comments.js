@@ -28,7 +28,6 @@ router.post('/', requireLoggedIn, async (req, res, next) => {
             id: req.user._id,
             username: req.user.username
         });
-        console.log(created);
         if (!created) {
             return next();
         }

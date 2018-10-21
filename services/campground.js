@@ -7,7 +7,6 @@ async function getAll(pageInfo) {
     } else {
         next = Date.now()
     }
-    console.log(next);
     const campgrounds = await Campground
         .find({
             updated: {

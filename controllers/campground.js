@@ -21,7 +21,6 @@ function create(campground, user) {
         id: user.id,
         username: user.username
     };
-    console.log(campground);
     return campgroundService.create(campground);
 }
 
