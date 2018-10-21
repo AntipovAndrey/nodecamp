@@ -28,10 +28,8 @@ const campgroundSchema = new mongoose.Schema({
     },
 });
 
-// TODO: fix cascade deletion
-campgroundSchema.pre('remove', async (next) => {
+campgroundSchema.pre('remove', async function (next) {
     try {
-        console.log(this._id);
         await Comment.deleteMany({
             _id: {
                 $in: this.comments

@@ -45,8 +45,8 @@ function edit(id, campground) {
 }
 
 function remove(id) {
-    return Campground.findByIdAndRemove(id)
-        .exec();
+    return Campground.findById(id)
+        .then(it => it.remove());
 }
 
 module.exports = {
